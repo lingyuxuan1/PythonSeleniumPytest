@@ -116,7 +116,7 @@ class LoginPage(Baseclass):
         return located_Verification_button1
 
     #创建技能正向流程
-    def create_skill(self,keyword):
+    # def create_skill(self,keyword):
 
 
 
