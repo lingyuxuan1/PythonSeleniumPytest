@@ -1,3 +1,5 @@
 .venv/
 Ystudy/
 *.log
+my_allure_results/
+report/
