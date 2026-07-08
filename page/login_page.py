@@ -1,6 +1,6 @@
-from selenium.common import TimeoutException
 from common.com import Baseclass
-import requests
+from selenium.common import TimeoutException
+from selenium.webdriver.remote.webelement import WebElement
 
 
 class LoginPage(Baseclass):
@@ -35,14 +35,14 @@ class LoginPage(Baseclass):
     #添加到我的技能
     add_skill = ('xpath',"//button[text()='添加到我的技能']")
 
-    #登录页面弹窗
-    def login_page(self):
+    def login_page(self) -> None:
+        """打开登录弹窗。"""
         # #登录弹窗
         login = self.wait_clickable(self.login_button, 10)
         login.click()
 
-    #登录正向功能
-    def do_login(self,username,password):
+    def do_login(self, username: str, password: str) -> str:
+        """输入账号密码并登录，返回登录结果文本。"""
         #获取网址
         # self.get_url(self.hc_url)
         # #登录弹窗
@@ -69,8 +69,8 @@ class LoginPage(Baseclass):
             if asure:
                 return asure.text
 
-    #验证手机号错误提示
-    def login_phone(self,username,password):
+    def login_phone(self, username: str, password: str) -> str:
+        """提交登录表单后返回手机号错误提示。"""
         login = self.wait_clickable(self.login_button,10)
         login.click()
         # 输入手机号
@@ -85,8 +85,8 @@ class LoginPage(Baseclass):
         #定位手机号错误提示
         return self.wait_visible(self.phone_error, 5).text
 
-    #验证密码错误提示
-    def login_pwd(self,username,password):
+    def login_pwd(self, username: str, password: str) -> str:
+        """提交登录表单后返回密码错误提示。"""
         login = self.wait_clickable(self.login_button, 10)
         login.click()
         # 输入手机号
@@ -101,8 +101,8 @@ class LoginPage(Baseclass):
         # 定位密码错误提示
         return self.wait_visible(self.pwd_error, 5).text
 
-    #验证码登录正向功能
-    def verify_login(self,phone_number):
+    def verify_login(self, phone_number: str) -> WebElement:
+        """切换到验证码登录并获取验证码按钮元素。"""
         self.login_page()
         located_Verification_button = self.wait_clickable(self.Verification_button, 5)
         located_Verification_button.click()
