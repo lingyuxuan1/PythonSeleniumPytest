@@ -6,11 +6,13 @@ from dataclasses import dataclass
 
 
 def _env(name: str, default: str) -> str:
+    """读取字符串类型环境变量，未配置时返回默认值。"""
     v = os.getenv(name)
     return default if v is None or v == "" else v
 
 
 def _env_int(name: str, default: int) -> int:
+    """读取整数类型环境变量，未配置时返回默认值。"""
     v = os.getenv(name)
     if v is None or v == "":
         return default
@@ -18,6 +20,7 @@ def _env_int(name: str, default: int) -> int:
 
 
 def _env_bool(name: str, default: bool) -> bool:
+    """读取布尔类型环境变量，未配置时返回默认值。"""
     v = os.getenv(name)
     if v is None or v == "":
         return default

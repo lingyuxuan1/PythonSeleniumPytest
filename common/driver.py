@@ -5,11 +5,11 @@ from selenium import webdriver
 # from selenium.webdriver.edge.options import Options as EdgeOptions
 # from selenium.webdriver.firefox.options import Options as FirefoxOptions
 from common.setting import settings
-from selenium.webdriver.edge.service import Service
-from selenium.webdriver.edge.options import Options as EdgeOptions
+# Selenium 4.6+ 自带 Selenium Manager，不再需要 webdriver_manager 联网下载驱动
 
 
 def _chrome() -> webdriver.Chrome:
+    """创建 Chrome 浏览器驱动。"""
     #options = ChromeOptions()
     # if settings.headless:
     #     options.add_argument("--headless=new")
@@ -19,20 +19,25 @@ def _chrome() -> webdriver.Chrome:
 
 
 def _edge() -> webdriver.Edge:
-    options = EdgeOptions()
-    options.add_experimental_option("detach", True)  # 保持浏览器不关闭
-    # 指定你下载的驱动路径
-    service = Service(executable_path=r"D:\down\edgedriver_win64 (1)\msedgedriver.exe")
-    return webdriver.Edge(service=service, options=options)
+    """创建 Edge 浏览器驱动。
+
+    Notes:
+    - 依赖 Selenium Manager（Selenium 4.6+）自动下载/匹配 EdgeDriver，
+      避免 webdriver_manager 联网拉取 LATEST_RELEASE 失败（azureedge.net 易被拦截）。
+    - 如需固定驱动版本，可改用 Service(executable_path=...) 指定本地 msedgedriver。
+    """
+    options = webdriver.EdgeOptions()
+    return webdriver.Edge(options=options)
 
 def _firefox() -> webdriver.Firefox:
+    """创建 Firefox 浏览器驱动。"""
     # options = FirefoxOptions()
     # if settings.headless:
     #     options.add_argument("-headless")
     return webdriver.Firefox()
 
 
-def create_driver():
+def create_driver() -> webdriver.Remote:
     """
     Create a Selenium WebDriver.
 
