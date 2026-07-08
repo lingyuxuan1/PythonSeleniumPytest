@@ -1,0 +1,50 @@
+name: UI自动化测试流水线
+# 触发规则：推送代码、提交PR自动执行
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  auto_test_job:
+    # 公有仓库直接使用GitHub云服务器，无需自备机器
+    runs-on: ubuntu-latest
+    steps:
+      # 1. 拉取仓库全部自动化代码
+      - name: 拉取源码
+        uses: actions/checkout@v4
+
+      # 2. 配置Python环境
+      - name: 初始化Python3.10
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+          cache: "pip" # 缓存依赖包，加速下次构建
+
+      # 3. 安装项目全部依赖
+      - name: 安装第三方库
+        run: |
+          python -m pip install --upgrade pip
+          pip install selenium pytest allure-pytest
+
+      # 4. 安装Chrome浏览器与驱动（适配Selenium UI自动化）
+      - name: 安装Chrome环境
+        run: |
+          sudo apt-get update
+          sudo apt-get install chromium-chromedriver chromium-browser
+          echo "export PATH=$PATH:/usr/lib/chromium-browser/" >> $GITHUB_ENV
+
+      # 5. 无头模式执行自动化用例（无需图形界面）
+      - name: 运行Pytest自动化
+        run: pytest testcase/ --alluredir=allure_result
+        env:
+          # 配置无头浏览器，云服务器无桌面
+          CHROME_OPTIONS: "--headless=new"
+
+      # 6. 保存Allure测试报告，流水线页面可下载
+      - name: 上传测试报告产物
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure自动化报告
+          path: allure_result
